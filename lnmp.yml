@@ -1,0 +1,44 @@
+version: '3.5'
+services:
+  nginx:
+    image: nginx:1.16
+    container_name: nginx-1.16
+    volumes:
+      - /home/docker/nginx/log:/var/log/nginx
+    restart: always
+    depends_on:
+      - php
+    ports:
+      - "9090:80"
+    links:
+      - php
+    networks:
+      - lnmp-dev
+  php:
+    image: php:7.4.3-fpm
+    container_name: php-fpm-7.4
+    volumes:
+      - /home/docker/php/html:/var/www/html
+    restart: always
+    depends_on:
+      - mysql
+    links:
+      - mysql
+    networks:
+      - lnmp-dev
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-8.0
+    volumes:
+      - /home/docker/mysql:/var/lib/mysql
+    restart: always
+    ports:
+      - "3308:3306"
+    networks:
+      - lnmp-dev
+    environment:
+      MYSQL_ROOT_PASSWORD: QIash2017
+networks:
+  lnmp-dev:
+    driver: bridge
+    name: lnmp-dev-network
